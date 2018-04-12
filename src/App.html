@@ -1,15 +1,15 @@
-<div class="app-container">
-  <h1>{{$title}}</h1>
+<div class="app-container" ref:container>
+  <h1>Let Me <span class="youtube"><i class="material-icons">play_circle_filled</i>YouTube</span> That For You</h1>
   
-  <input class="search" name="search" type="text" on:keyup="keyup(event, this)" bind:value="query" maxlength="240" />
+  <input ref:search class="search" name="search" type="text" bind:value="query" maxlength="240" />
   
-  {{#if query.length > 0}}
+  {{#if query.length > 0 && !isARedirect}}
   <div class="sharelink">
-      Sharable URL:
+      <span class="label">Sharable URL</span>
       <a href="{{sharelink}}" target="_blank">{{sharelink}}
   </div>
   <div class="target">
-      Target:
+      <span class="label">Target</span>
       <a href="{{youtubeURL}}" target="_blank">{{youtubeURL}}
   </div>
   {{/if}}
@@ -18,7 +18,12 @@
   
 
 <style>
+
   .app-container {
+    
+    --material-blue: #2978ff;
+    --material-light-blue: #629cff;
+    --material-red: #fd0000;
     
     display: flex;
     flex: 0 1 auto;
@@ -27,16 +32,72 @@
     height: 100vh;
     max-width: 40rem;
     margin: 0 auto;
-    align-items: space-around;
     padding: 10vw 0;
+    opacity: 1;
+  }
+  
+  .app-container.redirecting {
+    opacity: 0;
+    transition: 0.2s ease-in all;
+  }
+  
+  
+  h1 {
+    text-align: center;
+  }
+  
+  span.label {
+    font-size: 0.7rem;
+    line-height: 1.8rem;
+    text-transform: uppercase;
+    color: #b2b2b2;
+    display: block;
+    position: relative;
+    top: 0.3rem;
+  }
+  
+  .youtube {
+    color: var(--material-red);
+    font-weight: 600;
+  }
+  
+  a,
+  a:link,
+  a:visited {
+    color: var(--material-light-blue);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.25rem 0.25rem;
+  }
+  
+  a:hover {
+    color: var(--material-blue);
+    background-color: #fafafa;
   }
   
   .search {
       display: block;
-      max-width: 24rem;
       font-size: 1rem;
       line-height: 1.8em;
       padding: 0.5rem;
+      background-color: #fafafa;
+      border: none;
+      border-bottom: 5px solid #b2b2b2;
+  }
+  
+  .search::before {
+    content: "search";
+    font-family: "Material Icons";
+    display: inline-block;
+  }
+  
+  .search:focus,
+  .search:active {
+      border-bottom: 5px solid var(--material-blue);
+      box-shadow: none;
+      outline: none;
+      background-color: #f2f2f2;
+      transition: 0.3s ease-out all 0.05s;
   }
   
   .sharelink,
@@ -47,33 +108,99 @@
 
 <script>
   
+  const host = window.location.origin + window.location.pathname;
+  
+  const validURL = query => query.trim().replace(/ /gi, "+");
+  const youtubeURL = validURL => `https://www.youtube.com/results?search_query=${validURL}`;
   
   export default {
       
       data() {
           return { 
               query: "",
-              host: "https://preview.c9users.io/robustrory/lmytfy/app/public/index.html",
-              target: ""
-              
+              host,
+              target: "",
+              isARedirect: false,
           }
       },
       
+      
       oncreate() {
-          
+        this.validURL = validURL;
+        this.youtubeURL = youtubeURL;
+        let params = (new URL(document.location)).searchParams;
+        let q = params.get("q") || "";
+        if (q.length > 0) {
+          this.set({isARedirect: true})
+          this.animateTyping(q)
+        }
+        
       },
       
       computed: {
-          validURL: query => query.trim().replace(/ /gi, "+"),
-          youtubeURL: validURL => `https://www.youtube.com/results?search_query=${validURL}`,
+          validURL: query => validURL(query),
+          youtubeURL: validURL => youtubeURL(validURL),
           sharelink: (host, validURL) => `${host}?q=${validURL}`
       },
       
       methods: {
           
-          keyup(event, input) {
-              let value = input.value || "";
-              console.log(value)
+          validURL: (query) => validURL(query),
+          youtubeURL: (validURL) => youtubeURL(validURL),
+          
+          redirectToQuery(query) {
+            
+            const validURL = this.validURL(query);
+            const youtubeURL = this.youtubeURL(validURL);
+            
+            let params = (new URL(document.location)).searchParams;
+            
+            this.refs.container.classList.add("redirecting")
+            
+            if (params.get("test") != null) {
+              console.log("This was a test run.")
+              return;
+            }
+            
+            window.location = youtubeURL  
+            
+          },
+          
+          
+          animateTyping(query) {
+            var input = this.refs.search
+            input.disabled = true;
+            
+            const text = query.replace(/\+/gi, " ");
+            let index = 0;
+            console.log(text, text.length)
+            let timePerLetter = 160;
+            const startDelay = 600;
+            const endDelay = 1000;
+            let lastCalled = 0
+            
+            const render = (time) => {
+              if (time >= lastCalled + (timePerLetter)) {
+                
+                timePerLetter = Math.max(80, timePerLetter * 0.8);
+                lastCalled = time;console.log(timePerLetter)
+                input.value = input.value + text[index]
+                index++;
+                
+                if (index >= text.length) {
+                  window.cancelAnimationFrame(animationID);
+                  const that= this;
+                  
+                  window.setTimeout(() => that.redirectToQuery(query), endDelay)
+                  return;
+                }
+              }
+              animationID = window.requestAnimationFrame(render)
+            }
+            let animationID = null;
+            window.setTimeout(() => animationID = window.requestAnimationFrame(render), startDelay)
+            
+            
           }
           
       }
