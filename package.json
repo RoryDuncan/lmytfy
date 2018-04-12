@@ -1,0 +1,28 @@
+{
+  "name": "lmytfy",
+  "version": "1.0.0",
+  "description": "Let Me Youtube That For You",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup -c",
+    "watch": "rollup -c -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RoryDuncan/lmytfy.git"
+  },
+  "author": "Rory Duncan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RoryDuncan/lmytfy/issues"
+  },
+  "homepage": "https://github.com/RoryDuncan/lmytfy#readme",
+  "devDependencies": {
+    "rollup": "^0.57.1",
+    "rollup-plugin-commonjs": "^9.1.0",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-plugin-svelte": "^4.0.0",
+    "svelte": "^1.58.2"
+  }
+}
