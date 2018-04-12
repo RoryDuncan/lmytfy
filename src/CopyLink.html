@@ -1,0 +1,68 @@
+{{#if link}}
+    <div on:click="copy(link)" class="copy-link"><i ref:copy class="material-icons">content_copy</i>
+    <input ref:fake type="text" value={{link}} class="fake-element" />
+    </div>
+{{/if}}
+
+<style>
+    
+    .copy-link {
+        color: #888;
+        display: inline-block;
+        cursor: pointer;
+        position: relative;
+        padding: 0.25rem 0.5rem;
+        transition: 0.1s ease-out color;
+        border-radius: 3px;
+        opacity: 1;
+    }
+    
+    .copy-link:active {
+        opacity: 0.5;
+    }
+    
+    .copy-link:hover {
+        background-color: #f8f8f8;
+        color: var(--material-light-blue);
+    }
+    
+    .copy-link.active,
+    .copy-link:hover.active {
+        color: var(--material-light-green);
+    }
+    
+    .fake-element {
+        position: absolute;
+        left: -9999px;
+    }
+    
+    
+</style>
+
+<script>
+    
+    export default {
+        
+        methods: {
+            copy(link) {
+                
+                // copy to clipboard
+                this.refs.fake.select();
+                document.execCommand("copy")
+
+                // change our icon
+                const copy = this.refs.copy
+                copy.innerText = "check"
+                copy.classList.add("active")
+                
+                // clear it shortly
+                window.setTimeout(() => {
+                    copy.innerText = "content_copy"
+                    copy.classList.remove("active")
+                }, 1600)
+            }
+            
+        }
+    }
+    
+</script>
