@@ -1,0 +1,83 @@
+<div class="app-container">
+  <h1>{{$title}}</h1>
+  
+  <input class="search" name="search" type="text" on:keyup="keyup(event, this)" bind:value="query" maxlength="240" />
+  
+  {{#if query.length > 0}}
+  <div class="sharelink">
+      Sharable URL:
+      <a href="{{sharelink}}" target="_blank">{{sharelink}}
+  </div>
+  <div class="target">
+      Target:
+      <a href="{{youtubeURL}}" target="_blank">{{youtubeURL}}
+  </div>
+  {{/if}}
+  
+</div>
+  
+
+<style>
+  .app-container {
+    
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    max-width: 40rem;
+    margin: 0 auto;
+    align-items: space-around;
+    padding: 10vw 0;
+  }
+  
+  .search {
+      display: block;
+      max-width: 24rem;
+      font-size: 1rem;
+      line-height: 1.8em;
+      padding: 0.5rem;
+  }
+  
+  .sharelink,
+  .target {
+      margin: 1rem 0;
+  }
+</style>
+
+<script>
+  
+  
+  export default {
+      
+      data() {
+          return { 
+              query: "",
+              host: "https://preview.c9users.io/robustrory/lmytfy/app/public/index.html",
+              target: ""
+              
+          }
+      },
+      
+      oncreate() {
+          
+      },
+      
+      computed: {
+          validURL: query => query.trim().replace(/ /gi, "+"),
+          youtubeURL: validURL => `https://www.youtube.com/results?search_query=${validURL}`,
+          sharelink: (host, validURL) => `${host}?q=${validURL}`
+      },
+      
+      methods: {
+          
+          keyup(event, input) {
+              let value = input.value || "";
+              console.log(value)
+          }
+          
+      }
+      
+  }
+  
+</script>

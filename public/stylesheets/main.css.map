@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "file": "main.css",
+  "sources": [
+    "../../src/App.html"
+  ],
+  "sourcesContent": [
+    "<div class=\"app-container\">\n  <h1>{{$title}}</h1>\n  \n  <input class=\"search\" name=\"search\" type=\"text\" on:keyup=\"keyup(event, this)\" bind:value=\"query\" maxlength=\"240\" />\n  \n  {{#if query.length > 0}}\n  <div class=\"sharelink\">\n      Sharable URL:\n      <a href=\"{{sharelink}}\" target=\"_blank\">{{sharelink}}\n  </div>\n  <div class=\"target\">\n      Target:\n      <a href=\"{{youtubeURL}}\" target=\"_blank\">{{youtubeURL}}\n  </div>\n  {{/if}}\n  \n</div>\n  \n\n<style>\n  .app-container {\n    \n    display: flex;\n    flex: 0 1 auto;\n    flex-direction: column;\n    width: 100vw;\n    height: 100vh;\n    max-width: 40rem;\n    margin: 0 auto;\n    align-items: space-around;\n    padding: 10vw 0;\n  }\n  \n  .search {\n      display: block;\n      max-width: 24rem;\n      font-size: 1rem;\n      line-height: 1.8em;\n      padding: 0.5rem;\n  }\n  \n  .sharelink,\n  .target {\n      margin: 1rem 0;\n  }\n</style>\n\n<script>\n  \n  \n  export default {\n      \n      data() {\n          return { \n              query: \"\",\n              host: \"https://preview.c9users.io/robustrory/lmytfy/app/public/index.html\",\n              target: \"\"\n              \n          }\n      },\n      \n      oncreate() {\n          \n      },\n      \n      computed: {\n          validURL: query => query.trim().replace(/ /gi, \"+\"),\n          youtubeURL: validURL => `https://www.youtube.com/results?search_query=${validURL}`,\n          sharelink: (host, validURL) => `${host}?q=${validURL}`\n      },\n      \n      methods: {\n          \n          keyup(event, input) {\n              let value = input.value || \"\";\n              console.log(value)\n          }\n          \n      }\n      \n  }\n  \n</script>"
+  ],
+  "names": [],
+  "mappings": "AAoBE,0DAAe,CAAC,AAEd,OAAO,CAAE,IAAI,CACb,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,CACd,cAAc,CAAE,MAAM,CACtB,KAAK,CAAE,KAAK,CACZ,MAAM,CAAE,KAAK,CACb,SAAS,CAAE,KAAK,CAChB,MAAM,CAAE,CAAC,CAAC,IAAI,CACd,WAAW,CAAE,YAAY,CACzB,OAAO,CAAE,IAAI,CAAC,CAAC,AACjB,CAAC,AAED,4CAAQ,CAAC,AACL,OAAO,CAAE,KAAK,CACd,SAAS,CAAE,KAAK,CAChB,SAAS,CAAE,IAAI,CACf,WAAW,CAAE,KAAK,CAClB,OAAO,CAAE,MAAM,AACnB,CAAC,AAED,kDAAU,CACV,4CAAQ,CAAC,AACL,MAAM,CAAE,IAAI,CAAC,CAAC,AAClB,CAAC"
+}
