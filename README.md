@@ -4,6 +4,7 @@ aka -> Let Me Youtube That For You
 ## Description
 
 SPA which provides a redirect link to a pre-filled youtube search. Useful for being sassy.
+Built with [Svelte!](https://github.com/sveltejs/svelte)
 
 ## Build
 
